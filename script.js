@@ -6,13 +6,30 @@ const photoUrls = [
   "https://www.dropbox.com/scl/fi/dccm2qpv5r4yk7qiytok2/1793259147501_2272107706395109432_4751996825859230786_6c203c74c2dad6cf674d73e51e3c9703.jpg?rlkey=qxfqni1xhg30fyssbexxp26mw&raw=1"  // Kỷ niệm 03
 ];
 
+const viewer = document.querySelector('.photo-viewer');
+const viewerImage = viewer.querySelector('img');
+viewer.querySelector('button').addEventListener('click', () => viewer.close());
+viewer.addEventListener('click', (event) => {
+  if (event.target === viewer) viewer.close();
+});
+
 document.querySelectorAll('[data-photo]').forEach((frame) => {
   const url = photoUrls[Number(frame.dataset.photo)];
   if (!url) return;
   const image = document.createElement('img');
   image.alt = 'Ảnh kỷ niệm của chúng mình';
   image.addEventListener('load', () => {
-    frame.replaceChildren(image);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'photo-open';
+    button.setAttribute('aria-label', 'Xem ảnh kỷ niệm lớn hơn');
+    button.append(image);
+    button.addEventListener('click', () => {
+      viewerImage.src = image.src;
+      viewerImage.alt = image.alt;
+      viewer.showModal();
+    });
+    frame.replaceChildren(button);
     frame.classList.add('has-image');
   });
   image.src = url;
